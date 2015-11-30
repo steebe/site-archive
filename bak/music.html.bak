@@ -1,25 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-
+<html>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
-    <title>A Fraction</title>
-
+    <title>A Few of the Feelings</title>
 
     <link href="style/bootstrap.css" rel="stylesheet"> <!-- Bootstrap -->
 
     <link href="style/one-page-wonder.css" rel="stylesheet"> <!-- Custom -->
 
     <link rel="shortcut icon" href="https://dougernst.files.wordpress.com/2010/02/eddie-vedder.jpg?w=760"> <!-- icon -->
-</head>
+  </head>
 
-<body>
+
+  <body>
 
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -47,23 +44,20 @@
                     <li>
                         <a href="index.html#about"><font color="yellowgreen">Resume</font></a>
                     </li>
-                    <li>
-                        <a href="index.htmlmusic.html"><font color="#FFFFFF">Music</font></a>
-                    </li>
                 </ul>
-            </div><!-- navbar-collapse -->
+            </div>
         </div><!-- container -->
     </nav>
 
-    <!-- Full Width Image Header -->
     <header class="header-image">
         <div class="headline">
             <div class="container">
-                <h1>A fraction of the </h1><br><br>
+                <h1>A fraction of the </h1><br>
                 <h2>feels.</h2>
             </div>
         </div>
     </header>
+
 
     <!-- Page Content -->
     <div class="container">
@@ -341,6 +335,7 @@
 
         <hr class="featurette-divider">
 
+
         <!-- Footer -->
         <footer>
             <div class="row">
@@ -351,13 +346,5 @@
         </footer>
 
     </div><!-- container -->
-
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
-
-</body>
-
+  </body>
 </html>
