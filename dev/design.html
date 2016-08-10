@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <title>JavaCPT - Design</title>
+    <style media="screen">
+      .scrollable{
+        overflow: auto;
+        max-width: 800px;
+        max-height: 200px;
+      }
+      .code{
+        background-color: #FCB8BC;
+        color: #A11010;
+        border-radius: 5px;
+        font-family: 'Consolas', 'Monaco','Lucida Console';
+      }
+      .xml{
+        border: none;
+        background-color: lightslategrey;
+        color: orange;
+        border-radius: 30px;
+        font-size: 10px;
+      }
+      .nodec:link, .nodec:hover, .nodec:active, .nodec:visited{
+        text-decoration: none;
+        color: inherit;
+      }
+      .nodec{
+        text-decoration: none;
+        color: inherit;
+      }
+      p{
+        text-indent: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div style="text-align:right;">
+        <h4><b><i>Steve Bass</i></b></h4>
+        <p>August, 2016</p>
+      </div>
+      <hr>
+      <div class="page-header">
+        <h1><b>JavaCPT</b></h1>
+        <h3><i>Design Document</i></h3>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <a href="#use">Use</a> | <a href="#feat">Features</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <h4>Tasks:</h4>
+          &#x2611; Investigate existing queries
+          <br>
+          &#x2610; Define new XML input specification standards
+          <br>
+          &#x2610; Architect to handle large datasets
+          <br>
+          &#x2610; Output <b>one</b> CSV with demanded data points
+        </div>
+        <div class="col-md-4">
+          <h4><b><u>Result:</u></b></h4>
+          <p><li>A rewritten <i>Client Profiling Tool</i> in Java</li></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Structure:</h2>
+          <ul>
+            <li>JavaCPT [<i>Bass_CPT</i>] is to be a command line Java application
+            that when run on the command line and passed a list of XML documents (>=1),
+            will interpret them and perform the tasks they contain.</li>
+            <li>The tool will require three major functional elements:
+              <ol>
+                <li>An XML 'Fetcher &amp; Parser' to interpret arguments.</li>
+                <li>A query executor / data gatherer to perform tasks within XML input.</li>
+                <li>A FileWriter to write the query outputs to an organized CSV file.</li>
+              </ol>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h2>Goals:</h2>
+          <ul>
+            <li>To recreate the existing CPT in Java
+              <ul>
+                <li>Allow for user-gen standardized input (XML docs)</li>
+                <li>Return all possible data points desired from given input</li>
+              </ul>
+            </li>
+            <li>Emphasize scalability
+              <ul>
+                <li>Accept <b>multiple</b> XML doc arguments</li>
+                <li>Process hundreds of queries</li>
+                <li>'Store' intermediary data to ensure that dependencies are met</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h2>Edge Cases:</h2>
+          <ul>
+            <li>XML input whose tasks <i>all</i> depend on an item that is not available given the other tasks.</li>
+            <li>Circular dependencies?</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <a name="use" class="nodec"><h2>Intended Use:</h2></a>
+        <ol>
+          <li>The average user of JavaCPT is a developer or tester who needs
+          fast access to client metadata. At the very least, this tool will allow
+          ease-of-use opportunities in cases where a test/dev is required to pull
+          client info. <ul><li><i>Its purpose is to minimize time spent performing queries
+          and generating reports in TOAD or another DBMS.</i></li></ul></li>
+          <br>
+          <li>In the long term, this tool will be able to aid with the conceptual
+          auditing tool involved in the MMSM project. <ul><li>The largest time-waster in
+          the current manual process is comparing MMS exports to what is imported
+          by PACO into CA <i>by eye</i>. JavaCPT will generate accurate CSV
+          reports that can later be compared to an MMS CSV report of the same template
+          by the aforementioned concept application.</li></ul></li>
+        </ol>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <a name="feat" class="nodec"><h2>Features:</h2></a>
+        <div class="col-md-4">
+          Creating an input <b>standard</b>...<br>
+          <p>
+            The ideal capabilities of JavaCPT involve pulling any and all pieces
+            of client data into a summary CSV report.
+            By using a standardized XML template that will act as the only input
+            to JavaCPT, users will be able to efficiently pull ONLY data they're
+            concerned with.
+          </p>
+          <p><b>Example Template</b></p>
+          <textarea name="xml" rows="15" cols="50" class="xml">
+            <?xml version="1.0" encoding="UTF-8"?>
+            <start>
+              <task type="client">
+                <parameters>
+                    gcc_id , [p2], [p3],...
+                </parameters>
+                <query>
+                  <index>1</index>
+                  <sql></sql>
+                </query>
+                <return field="gcc">
+                  9003221
+                </return>
+              </task>
+
+              <task type="client">
+                <parameters>
+                  gcc_id
+                </parameters>
+                <file src="web">
+                  http://dataportalexternalimp/payxdataportal/client/00010001/2_0
+                </file>
+                <return field="gcc">
+                </return>
+              </task>
+
+              <task type="payments">
+                <query>
+                  <index></index>
+                  <sql>
+                    SELECT * FROM tab
+                    WHERE gcc_id = #;
+                  </sql>
+                </query>
+                <return field="">
+                </return>
+              </task>
+
+              <task type="payroll">
+                <query>
+                  <index>2</index>
+                  <sql></sql>
+                </query>
+                <return>
+                </return>
+              </task>
+
+              <task type="worker">
+                <query>
+                  <index>3</index>
+                  <sql></sql>
+                </query>
+                <return>
+                </return>
+              </task>
+
+            </start>
+          </textarea>
+        </div>
+        <div class="col-md-4">
+          <b>&lt;task&gt;&lt;/task&gt;</b>
+          <ul>
+            <li>Contains all tags required to perform a query.</li>
+            <li>
+              Attribute <i>type</i> represents the subdomain that the desired
+              data points will be a part of.Will act as an initial filter to do
+              preliminary sorting of parsedtasks.
+            </li>
+          </ul>
+          <hr>
+          <b>&lt;query&gt;&lt;/query&gt;</b>
+          <ul>
+            <li>
+              Represents the query associated with a given task. The goal is to
+              allow for the XML input file to either contain a specific SQL script,
+              or simply a reference to one that lies in a resource file.
+            </li>
+            <li>
+              <b>&lt;index&gt;&lt;/index&gt;</b> acts as a possible child, whose
+              value corresponds to the index of a SQL query in a separate conceptual
+              resource file.
+            </li>
+            <li>
+              <b>&lt;sql&gt;&lt;/sql&gt;</b> acts as a possible child, whose
+              value value is a SQL query.
+            </li>
+          </ul>
+          <hr>
+        </div>
+        <div class="col-md-4">
+          <b>&lt;return&gt;&lt;/return&gt;</b>
+          <ul>
+            <li>Represents the return value of the query associated with the task.</li>
+            <li>
+              Attribute <i>field</i> acts as metadata surrounding the return value
+              (represents the field that the return value belongs to).
+            </li>
+          </ul>
+          <hr>
+          <b>&lt;parameters&gt;&lt;/parameters&gt;</b>
+          <ul>
+            <li>
+              Represents the dependencies of the parenting task. Values include
+              fields the associated query require to work properly.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <h2>Expected Output:</h2>
+        <div class="col-md-4">
+          <h6><b><i>The same as CPT!</i></b></h6>
+          <ul>
+            <li>One CSV with the desired fields populated with data points pulled from clusters.</li>
+            <li>
+              To remain consistent with existing CPT usage, and to aid the MMSM progress,
+              it is important that JavaCPT is able to return comparable results.
+            </li>
+            <li>
+              <i style="font-size:10px;">I.E: data points and their respective fields should mirror the
+              results of a normal CPT run.</i>
+            </li>
+          </ul>
+          <h6><b><i>Scalable</i></b></h6>
+          JavaCPT should be able to handle:
+          <ul>
+            <li>Multiple XML inputs a once</li>
+            <li>Data input from both query returns and file locations</li>
+            <li>Thousands of data points per field, in any order</li>
+          </ul>
+        </div>
+        <div class="scrollable">
+          <img src="../docs/output.PNG" alt="BOO!" />
+        </div>
+
+        <br>
+
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <h2>Implementation:</h2>
+        <div class="code">
+          0.) For each arg:
+          <br>
+          &nbsp;&nbsp;0-1.) Instantiate a Fetcher to grab a file, and create a File object.
+          <br>
+          &nbsp;&nbsp;0-2.) Instantiate a Parser and parse the XML for tasks.
+          <br>
+          &nbsp;&nbsp;0-3.) Perform queries in 'proper' order from XML (based on priority/dependencies).
+          <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;0-3-1.) Store key outputs somehow (below) to feed other queries when necessary.
+          <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >> Matrix (top row == fields) - mimics a Schema
+          <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >> Hashmap {field : [val1, val2, val3, ...]}
+          <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;0-3-1.) Write values returned to a CSV file - organized by field.
+        </div>
+      </div>
+
+      <br><br>
+
+      <div class="row">
+        Copyright &copy; <a href="http://solutechnology.com">Solü Technology Partners</a> 2016
+      </div>
+
+    </div> <!-- container -->
+
+    <br><br>
+
+  </body>
+</html>
+
+<!--
+Notes:
+<ul style="list-style-type:none"></ul>      ->  Unordered list with no bullets.
+-->
