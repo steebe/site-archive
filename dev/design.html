@@ -155,25 +155,36 @@
             <start>
               <task type="client">
                 <parameters>
-                    gcc_id , [p2], [p3],...
+                    gcc_id
                 </parameters>
                 <query>
-                  <index>1</index>
+                  <index></index>
+                  <sql>
+                    SELECT cc_ou_id FROM spr.co_clt WHERE gcc_id=?
+                  </sql>
+                </query>
+                <return>
+                  cc_ou_id
+                </return>
+              </task>
+
+              <task type="payroll">
+                <parameters> cltpc_pc_id </parameters>
+                <query>
+                  <index> 3 </index>
                   <sql></sql>
                 </query>
-                <return field="gcc">
-                  9003221
-                </return>
+                <return> * </return>
               </task>
 
               <task type="client">
                 <parameters>
-                  gcc_id
                 </parameters>
                 <file src="web">
                   http://dataportalexternalimp/payxdataportal/client/00010001/2_0
                 </file>
-                <return field="gcc">
+                <return>
+                  gcc_id
                 </return>
               </task>
 
@@ -181,26 +192,63 @@
                 <query>
                   <index></index>
                   <sql>
-                    SELECT * FROM tab
-                    WHERE gcc_id = #;
+                    select
+                      ftrnd_id,
+                      ftrn_id,
+                      coalesce(reg_nm, tg_nm) "Name",
+                      ftrn_amt "Amt",
+                      cpr_chk_dt "Check Date",
+                      ftrnd_calc_dsbmt_dt "Payment Date",
+                      ftrnd_actl_dsbmt_dt "Payment Date Ovrd",
+                      mlv1.mlv_nm "Type",
+                      mlv2.mlv_nm "TP/TN",
+                      ftrnd_gor_id "Garnishment",
+                      mlv3.mlv_id "HOT",
+                      acct2.acct_unfrmt_nbr "Bank Ovrd",
+                      ftrnd_nbr_emp,
+                      ftrnd_totl_liab_amt,
+                      ftrnd_calc_pnlt_dt,
+                      ftrnd_calc_tmly_pay_dt,
+                      ftrnd_tfls_id,
+                      ftrnd_ftrnc_id,
+                      ftrnd_ftrnd_id_rvsl,
+                      ftrnd_adtl_pmt_ind,
+                      ftrnd_rplcmt_ind,
+                      ftrnd_resd_emp_cnt_nbr,
+                      ftrnd_non_resd_emp_cnt_nbr,
+                      ftrnd_flng_perd_strt_dt,
+                      ftrnd_flng_perd_end_dt,
+                      ftrnd_adj_flng_perd_Strt_dt,
+                      ftrnd_adj_flng_perd_end_dt,
+                      ftrnd_chng_resn_txt,
+                      ftrn_tran_prcd_ind,
+                      ftrn_info_only_ind,
+                      ftrn_proc_dt,
+                      ftrn_ftrn_id_smry "Parent Ftrn"
+                    from fin_tran_dsbmt
+                    join fin_tran on ftrnd_ftrn_id = ftrn_id
+                    left join org_reg on ftrn_or_id = or_id
+                    left join reg on or_reg_id = reg_id
+                    left join org_tax_grp on ftrn_otg_id = otg_id
+                    left join tax_grp on otg_tg_id = tg_id
+                    left join org_acct oac2 on ftrnd_oac_id = oac2.oac_id
+                    left join acct acct2 on oac2.oac_acct_id = acct2.acct_id
+                    left join clt_payr on ftrn_cpr_id = cpr_id
+                    join co_clt on fin_tran.gcc_id = cc_id
+                    left join mstr_lkup_val mlv1 on mlv1.mlv_id = ftrnd_ftrndt_id
+                    left join mstr_lkup_val mlv2 on mlv2.mlv_id = ftrnd_dct_id
+                    left join mstr_lkup_val mlv3 on mlv3.mlv_id = ftrnd_hot_id
+                    where cc_acct_nbr = '09000132'
                   </sql>
                 </query>
-                <return field="">
-                </return>
-              </task>
-
-              <task type="payroll">
-                <query>
-                  <index>2</index>
-                  <sql></sql>
-                </query>
                 <return>
+                  *
                 </return>
               </task>
 
               <task type="worker">
                 <query>
-                  <index>3</index>
+                  <index></index>
                   <sql></sql>
                 </query>
                 <return>
@@ -221,6 +269,21 @@
             </li>
           </ul>
           <hr>
+          <b>&lt;return&gt;&lt;/return&gt;</b>
+          <ul>
+            <li>Represents the field of the return value of the query associated with the task.</li>
+          </ul>
+          <hr>
+          <b>&lt;parameters&gt;&lt;/parameters&gt;</b>
+          <ul>
+            <li>
+              Represents the dependencies of the parenting task. Values include
+              fields the associated query require to work properly.
+            </li>
+          </ul>
+          <hr>
+        </div>
+        <div class="col-md-4">
           <b>&lt;query&gt;&lt;/query&gt;</b>
           <ul>
             <li>
@@ -230,31 +293,17 @@
             </li>
             <li>
               <b>&lt;index&gt;&lt;/index&gt;</b> acts as a possible child, whose
-              value corresponds to the index of a SQL query in a separate conceptual
+              value corresponds to the index of a SQL query in a separate
               resource file.
             </li>
             <li>
               <b>&lt;sql&gt;&lt;/sql&gt;</b> acts as a possible child, whose
               value value is a SQL query.
             </li>
-          </ul>
-          <hr>
-        </div>
-        <div class="col-md-4">
-          <b>&lt;return&gt;&lt;/return&gt;</b>
-          <ul>
-            <li>Represents the return value of the query associated with the task.</li>
             <li>
-              Attribute <i>field</i> acts as metadata surrounding the return value
-              (represents the field that the return value belongs to).
-            </li>
-          </ul>
-          <hr>
-          <b>&lt;parameters&gt;&lt;/parameters&gt;</b>
-          <ul>
-            <li>
-              Represents the dependencies of the parenting task. Values include
-              fields the associated query require to work properly.
+              <b>If both the index and sql tags of a given query tag possess
+              values, JavaCPT will run the query associated
+              with index.</b> (Prioritizing safety and <i>fool-proofedness</i>)
             </li>
           </ul>
         </div>
@@ -286,7 +335,7 @@
           </ul>
         </div>
         <div class="scrollable">
-          <img src="../docs/output.png" alt="BOO!" />
+          <img src="output.png" alt="BOO!" />
         </div>
 
         <br>
@@ -300,7 +349,7 @@
         <div class="code">
           0.) For each arg:
           <br>
-          &nbsp;&nbsp;0-1.) Instantiate a Fetcher to grab a file, and create a File object.
+          &nbsp;&nbsp;0-1.) Instantiate a Fetcher to grab the file, and create a File object.
           <br>
           &nbsp;&nbsp;0-2.) Instantiate a Parser and parse the XML for tasks.
           <br>
