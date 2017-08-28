@@ -141,7 +141,7 @@
         <footer>
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Copyright &copy; <a href="http://www.worldpeace.com/">Bassman</a> 2015</p>
+                    <p>Copyright &copy; <a href="http://www.worldpeace.com/">Bassman</a><div id="date">2015</div></p>
                 </div>
             </div>
         </footer>
@@ -153,6 +153,17 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      var $ = function(id) {
+        return document.getElementById(id);
+      }
+
+      var today = new Date();
+
+      $("date").innerHTML = today.getFullYear();
+
+    </script>
 
 </body>
 
