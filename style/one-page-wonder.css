@@ -3,8 +3,6 @@
  * Code licensed under the Apache License v2.0.
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
-
-
  @font-face
  {
  	font-family: 'Hack';
@@ -16,10 +14,8 @@
     background-color: darkslategrey;
 }
 
-
-
 body {
-    margin-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    margin-top: 50px;
     font-family: 'Hack','Lucida Console', Monaco, monospace;
     background-color: lightsalmon;
 }
@@ -29,10 +25,6 @@ body {
     width: 100%;
     text-align: center;
     background-image: url('docs/earth_from_space.jpg')  no-repeat center center scroll;
-    /*-webkit-background-size: cover;
-    -moz-background-size: cover;
-    background-size: cover;
-    -o-background-size: cover;*/
 }
 
 .headline{
@@ -76,8 +68,12 @@ body {
 
 footer {
     margin: 50px 0;
+    text-align: center;
 }
 
+#date {
+    display: inline-block;
+}
 
 .tex sub, .latex sub, .latex sup {
   text-transform: uppercase;
